@@ -1,6 +1,4 @@
 //geolocationPage
-
-// location of user
 var x = document.getElementById("geoLocation");
 function getLocation() {
     if (navigator.geolocation) {
@@ -46,21 +44,16 @@ var map;
 function getMap() {
 	console.log("getMap");
   var mapOptions = {
-    zoom: 8,
+    zoom: 20,
     center: new google.maps.LatLng(mapLatitude, mapLongitude)
   };
   map = new google.maps.Map(document.getElementById('map-canvas'),
       mapOptions);
 
-  $(window).resize(function() {
-    // (the 'map' here is the result of the created 'var map = ...' above)
-    google.maps.event.trigger(map, "resize");
-
 	var marker = new google.maps.Marker({
 	    position: myLatlng,
 	    map: map,
 	    title:"You are here!"
-
 	});
 }
 
@@ -97,7 +90,7 @@ function getDirections() {
   directionsDisplay = new google.maps.DirectionsRenderer();
   //start = new google.maps.LatLng(directionsLatLng);
   var directionsOptions = {
-    zoom:17,
+    zoom:12,
     center: start
   }
   directionsMap = new google.maps.Map(document.getElementById("directions-canvas"), directionsOptions);
@@ -108,7 +101,7 @@ function getDirections() {
 function calcRoute() {
 	console.log("calcRoute");
   start = directionsLatLng;
-  end = "Shenzhen, China";
+  end = "Kwun Tong";
   var request = {
     origin:start,
     destination:end,
