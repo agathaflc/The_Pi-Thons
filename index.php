@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 #!/usr/local/bin/php 
+=======
+#!/usr/local/bin/php
+
+>>>>>>> master
 <!DOCTYPE html>
 <html>
 <head>
