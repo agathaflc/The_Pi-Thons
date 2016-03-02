@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 //homePage
 
 var marker;
@@ -76,6 +77,8 @@ $( document ).on("pageshow", "#homePage", function() {
 	initMap();
 });
 
+=======
+>>>>>>> master
 //geolocationPage
 var x = document.getElementById("geoLocation");
 function getLocation() {
@@ -121,27 +124,40 @@ function showMapPosition(position) {
 var map;
 function getMap() {
 	console.log("getMap");
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
   var mapOptions = {
     zoom: 20,
     center: new google.maps.LatLng(mapLatitude, mapLongitude)
   };
+<<<<<<< HEAD
 
   map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 
   var infowindow = new google.maps.InfoWindow({
     content: "This is my content"
   });
+=======
+  map = new google.maps.Map(document.getElementById('map-canvas'),
+      mapOptions);
+>>>>>>> master
 
 	var marker = new google.maps.Marker({
 	    position: myLatlng,
 	    map: map,
+<<<<<<< HEAD
 	    title: "You are here!",
 	});
 
   marker.addListener('click', function() {
     infowindow.open(map, marker);
   });
+=======
+	    title:"You are here!"
+	});
+>>>>>>> master
 }
 
 $( document ).on( "pageshow", "#mapPage", function( event ) {
