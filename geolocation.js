@@ -43,18 +43,27 @@ function showMapPosition(position) {
 var map;
 function getMap() {
 	console.log("getMap");
+
   var mapOptions = {
     zoom: 20,
     center: new google.maps.LatLng(mapLatitude, mapLongitude)
   };
-  map = new google.maps.Map(document.getElementById('map-canvas'),
-      mapOptions);
+
+  map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+
+  var infowindow = new google.maps.InfoWindow({
+    content: "This is my content"
+  });
 
 	var marker = new google.maps.Marker({
 	    position: myLatlng,
 	    map: map,
-	    title:"You are here!"
+	    title: "You are here!",
 	});
+
+  marker.addListener('click', function() {
+    infowindow.open(map, marker);
+  });
 }
 
 $( document ).on( "pageshow", "#mapPage", function( event ) {
