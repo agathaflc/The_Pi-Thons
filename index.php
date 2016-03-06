@@ -14,16 +14,13 @@
 	<?php include("header.php") ?>
 
 	<div role="main" class="ui-content">
-<<<<<<< HEAD
 		<h1>This is the home page</h1>
 	</div>
 
 	<?php include("footer.php") ?>
-=======
 		<div id="mapHome">mapHome</div>
 	<!--?php include_once("footer.php"); ?-->
 	</div>
->>>>>>> master
 </div>
 
 <div data-role="page" id="aboutPage">
@@ -32,12 +29,8 @@
 	<div role="main" class="ui-content">
 		<h1>This is the about page</h1>
 	</div>
-
-<<<<<<< HEAD
 	<?php include("footer.php") ?>
-=======
 	<!--?php include_once("footer.php"); ?-->
->>>>>>> master
 </div>
 
 <!-- Start of first page -->
@@ -74,12 +67,9 @@
 	<div role="main" class="ui-content">
 		<div id="directions-canvas">directions-canvas</div>
 	</div><!-- /content -->
-
-<<<<<<< HEAD
 	<?php include("footer.php") ?>
-=======
 	<!--?php include_once("footer.php"); ?-->
->>>>>>> master
+
 </div>
 
 <div data-role="page" id="contactPage">
@@ -89,11 +79,11 @@
 		<h1>This is the contact page</h1>
 	</div>
 
-<<<<<<< HEAD
+
 	<?php include("footer.php") ?>
-=======
+
 	<!--?php include_once("footer.php"); ?-->
->>>>>>> master
+
 </div>
 
 <!-- /page -->
