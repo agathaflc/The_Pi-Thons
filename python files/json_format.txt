@@ -1,0 +1,16 @@
+[
+{
+"time": "15:30:59:",
+"MQ2_level": 127,
+"MQ2_status": "y",
+"radiation_level": 120,
+"radiation_status": "n"
+},
+{
+"time": "15:30:59:",
+"MQ2_level": 127,
+"MQ2_status": "y",
+"radiation_level": 120,
+"radiation_status": "n"
+}
+]
