@@ -2,21 +2,22 @@
 
 import ftplib
 import time
+import global_var
 
 # where the data will be displayed online
-filename = "current.txt"
+filename = global_var.current_status
 
 # FTP credentials
-ftp = ftplib.FTP ('ihome.ust.hk')
+ftp = ftplib.FTP (global_var.host)
 
 # update with username and password
-ftp.login("maresdhayana", "lovely12")
+ftp.login(global_var.username, global_var.password)
 
 # variable for current state
 currentState = ''
 
 # Record file name
-recordFileName = 'record.txt'
+recordFileName = global_var.status_record
 
 ftp.cwd ('cgi-bin')
 
@@ -24,7 +25,7 @@ while True:
         # read current.txt data file (contains yes or no)
 
         # b appending to the mode opens the file in binary mode
-        currentFile = open ('current.txt','r', encoding='ascii')
+        currentFile = open (global_var.current_status,'r', encoding='ascii')
 
         # print out current state
         for line in currentFile:

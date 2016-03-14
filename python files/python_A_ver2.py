@@ -15,6 +15,7 @@ import os
 import subprocess
 import smtplib
 import string
+import global_var
 from time import gmtime, strftime
 
 GPIO.setmode(GPIO.BCM)
@@ -108,11 +109,16 @@ GPIO.setup(SPIMISO, GPIO.IN)
 GPIO.setup(SPICLK, GPIO.OUT)
 GPIO.setup(SPICS, GPIO.OUT)
 
+mq2_status = ""
+rad_status = "radiation status"
+
 try:
     while True:
         for adcnum in adcs:
             # read the analog pin
             adctot = 0
+            ## TEMPORARY RADIATION LEVEL
+            rad_level = 0
             for i in range(reps):
                 read_adc = readadc(adcnum, SPICLK, SPIMOSI, SPIMISO, SPICS)
                 adctot += read_adc
@@ -139,23 +145,47 @@ try:
 ##            # reset the list
 ##            GPIO_readings=[]
             if (read_adc > 100):
-                print ("DANGEROUS")
+                mq2_status = "DANGEROUS"
+                print (mq2_status)
                 # TODO: write "y" in current.txt file
                 # Store into .txt file
-                filename = "current.txt"
+                filename = global_var.current_status
                 myfile = open(filename, 'wt') # Open the file for writing
-                one_line = "y"
-                myfile.write(one_line)
+                ## WRITE THE FILE IN JSON FORMAT ##
+                myfile.write("[\n")
+                myfile.write("{\n")
+                one_item = 'time: ' + time.ctime() + ',\n' + \
+                           'MQ2_level: ' + str(read_adc) + ',\n' + \
+                           'MQ2_status: ' + mq2_status + ',\n' + \
+                           'radiation_level: ' + str(rad_level) + ',\n' + \
+                           'radiation_status: ' + rad_status + '}\n]'
+                myfile.write(one_item)
                 myfile.close()
             else :
-                print ("Safe")
+                mq2_status = "Safe";
+                print (mq2_status)
                 # TODO: write "n" in current.txt file
                 # Store into .txt file
-                filename = "current.txt"
+                filename = global_var.current_status
                 myfile = open(filename, 'wt') # Open the file for writing
-                one_line = "n"
-                myfile.write(one_line)
+
+                ## WRITE THE FILE IN JSON FORMAT ##
+                myfile.write("[\n")
+                myfile.write("{\n")
+                one_item = 'time: ' + time.ctime() + ',\n' + \
+                           'MQ2_level: ' + str(read_adc) + ',\n' + \
+                           'MQ2_status: ' + mq2_status + ',\n' + \
+                           'radiation_level: ' + str(rad_level) + ',\n' + \
+                           'radiation_status: ' + rad_status + '}\n]'
+                myfile.write(one_item)
                 myfile.close()
+
+##            # write the current level to .txt file anyway
+##            myfile = open(global_var.current_level, 'wt')
+##            one_line = str(read_adc)
+##            myfile.write(one_line)
+##            myfile.close()
+            
             #reading_sum = 0 #reset the sum
             time.sleep(time_between_readings)
 except KeyboardInterrupt:             # trap a CTRL+C keyboard interrupt
