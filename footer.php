@@ -1,3 +1,3 @@
 <div data-role="footer" data-position="fixed">
-	<h4>jQuery Mobile App :: Geolocation</h4>
+	<h4>(c) The Pi-Thons</h4>
 </div><!-- /footer -->

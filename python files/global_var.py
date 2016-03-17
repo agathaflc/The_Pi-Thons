@@ -8,6 +8,6 @@ level_record = "level_record.txt"
 
 # FTP credentials
 host = 'ihome.ust.hk'
-username = "maresdhayana"
-password = "lovely12"
+username = "username"
+password = "password"
 
