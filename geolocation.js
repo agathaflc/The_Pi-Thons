@@ -7,6 +7,7 @@ var LocationData = [
     [22.3916, 113.9709, "Tuen Mun", 	0, 		"safe",		0,		"safe"], 
 ];
 
+
 var dummyData = [
 	// lat     long        name		MQ2_level	MQ2_status	r_level r_status
 	[22.3133, 114.2258, "Kwun Tong", 	0, 		"safe",		0,		"safe"],
