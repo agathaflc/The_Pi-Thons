@@ -1,56 +1,173 @@
-//homePage
+var LocationData = [
+	// 0    	 1        	2			3			4			5 		6
+    // lat     lang        name		MQ2_level	MQ2_status	r_level r_status
+    [22.3816, 114.2733, "Sai Kung", 	0, 		"safe",		0,		"safe"], 
+    [22.2770, 114.176937, "Wan Chai", 	0, 		"safe",		0,		"safe"], 
+    [22.3584, 114.1070, "Tsing Yi", 	0, 		"safe",		0,		"safe"], 
+    [22.3916, 113.9709, "Tuen Mun", 	0, 		"safe",		0,		"safe"], 
+];
 
-var marker;
-
-function initMap() {
-	var mapz = new google.maps.Map(document.getElementById('mapHome'), {
-	  zoom: 11,
-	  center: {lat: 22.2783, lng: 114.1747}
-	});
-
-	marker1 = new google.maps.Marker({
-	  map: mapz,
-	  draggable: false,
-	  animation: google.maps.Animation.DROP,
-	  position: {lat: 22.3816, lng: 114.2733}
-	});
-    marker1.addListener('click', function() {
-		infowindow.open(mapz, marker1);
-	});	  
+var dummyData = [
+	// lat     long        name		MQ2_level	MQ2_status	r_level r_status
+	[22.3133, 114.2258, "Kwun Tong", 	0, 		"safe",		0,		"safe"],
+	[22.3225, 114.1706, "Mong Kok", 	0, 		"safe",		0,		"safe"],
+	[22.2940, 114.1712, "Tsim Sha Tsui",0, 		"safe",		0,		"safe"],
+	[22.3133, 114.0433, "Disneyland", 	0, 		"safe",		0,		"safe"],
+	[22.3089, 113.9144, "Airport", 		0, 		"safe",		0,		"safe"],
+	[22.3750, 114.1833, "Sha Tin", 		0, 		"safe",		0,		"safe"],
+	[22.2819, 114.1581, "Central", 		0, 		"safe",		0,		"safe"],
+	[22.5144, 114.0657, "Lok Ma Chau", 	0, 		"safe",		0,		"safe"],
+];
+ 
+/* function showHello(){
+	alert("hello");
+} */
 	
-	marker2 = new google.maps.Marker({
-	  map: mapz,
-	  draggable: false,
-	  animation: google.maps.Animation.DROP,
-	  position: {lat: 22.2770, lng: 114.176937}
-	});
-    marker2.addListener('click', function() {
-		infowindow.open(mapz, marker2);
-	});	  
-	
-	marker3 = new google.maps.Marker({
-	  map: mapz,
-	  draggable: false,
-	  animation: google.maps.Animation.DROP,
-	  position: {lat: 22.3584, lng: 114.1070}
-	});
-    marker3.addListener('click', function() {
-		infowindow.open(mapz, marker3);
-	});	
+function fetch_json()
+{
+	console.log("fetch_json");
+	$.getJSON("http://ihome.ust.hk/~maresdhayana/cgi-bin/current.json", function(data){
+		var i;
+		for (i=0; i<data.length; i++)
+		{
+			if (data[i].name == "saikung")
+			{
+				LocationData[0][3] = data[i].MQ2_level; // Set level of mq2
+				LocationData[0][4] = data[i].MQ2_status;
+				LocationData[0][5] = data[i].radiation_level; // Set level of radiation
+				LocationData[0][6] = data[i].radiation_status;
+			}
+			else if (data[i].name == "wanchai")
+			{
+				LocationData[1][3] = data[i].MQ2_level; // Set level of mq2
+				LocationData[1][4] = data[i].MQ2_status;
+				LocationData[1][5] = data[i].radiation_level; // Set level of radiation
+				LocationData[1][6] = data[i].radiation_status;
+			}
+			else if (data[i].name == "tuenmun")
+			{
+				LocationData[2][3] = data[i].MQ2_level; // Set level of mq2
+				LocationData[2][4] = data[i].MQ2_status;
+				LocationData[2][5] = data[i].radiation_level; // Set level of radiation
+				LocationData[2][6] = data[i].radiation_status;
+			}
+			else if (data[i].name == "tsingyi")
+			{
+				LocationData[3][3] = data[i].MQ2_level; // Set level of mq2
+				LocationData[3][4] = data[i].MQ2_status;
+				LocationData[3][5] = data[i].radiation_level; // Set level of radiation
+				LocationData[3][6] = data[i].radiation_status;
+			}
+		}
+	/*   var items = [];
+	  var wholeObj ="";
+	  var counter = 1;
 
-	marker4 = new google.maps.Marker({
-	  map: mapz,
-	  draggable: false,
-	  animation: google.maps.Animation.DROP,
-	  position: {lat: 22.3916, lng: 113.9709}
-	});
-    marker4.addListener('click', function() {
-		infowindow.open(mapz, marker4);
-	});
+	  $.each( data, function( key, val ) {
+		//var allObjInfo = "";
+		for (leftItem in val){
+		  objInfo = val[leftItem];
+		  LocationData[0].push(objInfo);
+		  //allObjInfo = allObjInfo + objInfo;
+		  counter = counter + 1;
+		  //everything = everything + allObjInfo;
+		  //$("#textDisplay").html(allObjInfo);
+		}
+		//document.write(allObjInfo);
+		//alert(allObjInfo);
+		//alert (everything);
+		//wholeObj = wholeObj + allObjInfo;
+		//console.log("there's an error here");
+	  });
+	  //alert(items);
+	  //$("#textDisplay").html(wholeObj);*/
+	}); 
 }
 
+/* $(document).ready(function() { 
+// http request 
 
-var contentString = '<div id="content">'+
+}); */
+
+var markers = [];
+
+function initialize()
+{
+    var map = 
+        new google.maps.Map(document.getElementById('mapHome'));    
+	var bounds = new google.maps.LatLngBounds();
+    var infowindow = new google.maps.InfoWindow();
+	
+	markers = [];
+    // loop through markers and display content
+    for (var i in LocationData)
+    {
+        var p = LocationData[i];
+        var latlng = new google.maps.LatLng(p[0], p[1]);
+        bounds.extend(latlng);
+        
+        var marker = new google.maps.Marker({
+            position: latlng,
+            map: map,
+            draggable: false,
+			optimized: false,
+            //animation: google.maps.Animation.DROP,
+            title: p[2] + " " + p[3],
+			// change icon image
+			icon: (p[4] != "safe" || p[6] != "safe") ? "http://www.imageupload.co.uk/images/2016/03/17/flashing_red_orangee93bb.gif":"http://maps.google.com/mapfiles/marker_grey.png"
+        });
+		markers.push(marker);
+		var contentString = '<div id="content">'+p[3]+'</div>';
+     
+        // allow each marker to have an info window
+        google.maps.event.addListener(marker, 'click', function() {
+            infowindow.setContent(this.title + contentString);
+			//infowindow.setContent(contentString);
+            infowindow.open(map, this);
+        });
+		
+		google.maps.event.addDomListener(window, 'load', initialize);
+
+/* 		google.maps.event.addListener(marker, 'click', (function(mm, tt) {
+			return function() {
+				infowindow.setContent(tt);
+				infowindow.open(map, mm);
+			}
+		})(marker, p[2])); */
+    }
+    
+    // automatically center the map fitting all markers on the screen
+    map.fitBounds(bounds);
+	
+	//setInterval("displayMarkers(LocationData, map)", 3000);
+}
+ 
+function updateMarker(markers, LocationData)
+{
+	console.log("updateMarker");
+	var n = LocationData.length;
+	//console.log("n = " + n);
+	var i;
+	for (i=0; i<n; i++)
+	{
+		//console.log(i);
+		var p = LocationData[i];
+		var yes = (p[4] != "safe" || p[6] != "safe")
+		console.log(yes);
+		markers[i].setIcon((p[4] != "safe" || p[6] != "safe") ? "http://www.imageupload.co.uk/images/2016/03/17/flashing_red_orangee93bb.gif":"http://maps.google.com/mapfiles/marker_grey.png"); 
+		//console.log(p[4] + p[6])
+	}
+}
+
+function start_timer()
+{
+	setInterval("fetch_json()", 3000);
+	setInterval("updateMarker(markers, LocationData)", 3000);
+}
+
+$(document).ready(function() { start_timer(); })
+
+/*var contentString = '<div id="content">'+
   '<div id="siteNotice">'+
   '</div>'+
   '<h1 id="firstHeading" class="firstHeading">Tuen Mun</h1>'+
@@ -60,20 +177,13 @@ var contentString = '<div id="content">'+
   '</div>';
   
 var infowindow = new google.maps.InfoWindow({
-	content: contentString
-});
+  content: contentString
+});*/
 
-//function toggleBounce() {
-//	if (marker.getAnimation() !== null) {
-//	  marker.setAnimation(null);
-//	} else {
-//	  marker.setAnimation(google.maps.Animation.BOUNCE);
-//	}
-//}
 
 $( document ).on("pageshow", "#homePage", function() {
-	console.log("initMap");
-	initMap();
+  console.log("initMap");
+  initialize();
 });
 
 //geolocationPage
@@ -102,7 +212,7 @@ var mapLongitude;
 var myLatlng;
 
 function getMapLocation() {
-	console.log("getMapLocation");
+  console.log("getMapLocation");
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(showMapPosition);
     } else {
@@ -110,7 +220,7 @@ function getMapLocation() {
     }
 }
 function showMapPosition(position) {
-	console.log("showMapPosition");
+  console.log("showMapPosition");
     mapLatitude = position.coords.latitude;
     mapLongitude = position.coords.longitude;
     myLatlng = new google.maps.LatLng(mapLatitude,mapLongitude);
@@ -120,7 +230,7 @@ function showMapPosition(position) {
 
 var map;
 function getMap() {
-	console.log("getMap");
+  console.log("getMap");
 
   var mapOptions = {
     zoom: 20,
@@ -133,11 +243,11 @@ function getMap() {
     content: "This is my content"
   });
 
-	var marker = new google.maps.Marker({
-	    position: myLatlng,
-	    map: map,
-	    title: "You are here!",
-	});
+  var marker = new google.maps.Marker({
+      position: myLatlng,
+      map: map,
+      title: "You are here!",
+  });
 
   marker.addListener('click', function() {
     infowindow.open(map, marker);
@@ -157,7 +267,7 @@ var start;
 var end;
 
 function getDirectionsLocation() {
-	console.log("getDirectionsLocation");
+  console.log("getDirectionsLocation");
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(showDirectionsPosition);
     } else {
@@ -165,7 +275,7 @@ function getDirectionsLocation() {
     }
 }
 function showDirectionsPosition(position) {
-	console.log("showDirectionsPosition");
+  console.log("showDirectionsPosition");
     directionsLatitude = position.coords.latitude;
     directionsLongitude = position.coords.longitude;
     directionsLatLng = new google.maps.LatLng(directionsLatitude,directionsLongitude);
@@ -173,7 +283,7 @@ function showDirectionsPosition(position) {
 }
 
 function getDirections() {
-	console.log('getDirections');
+  console.log('getDirections');
   directionsDisplay = new google.maps.DirectionsRenderer();
   //start = new google.maps.LatLng(directionsLatLng);
   var directionsOptions = {
@@ -186,7 +296,7 @@ function getDirections() {
 }
 
 function calcRoute() {
-	console.log("calcRoute");
+  console.log("calcRoute");
   start = directionsLatLng;
   end = "Kwun Tong";
   var request = {
@@ -204,4 +314,3 @@ function calcRoute() {
 $( document ).on( "pageshow", "#directionsPage", function( event ) {
   getDirectionsLocation();
 });
-
