@@ -48,12 +48,28 @@
   <div role="main" class="ui-content">
     <h1>This is the home page</h1>
     <div id="textDisplay">
+	
   </div>
   </div>
 
-  <?php include("footer.php") ?>
+  <!--?php include("footer.php") ?-->
     <div id="mapHome">mapHome</div>
+	<button type="button" id="dummy" onclick="displayDummy()">Display dummy data</button>
   <!--?php include_once("footer.php"); ?-->
+  <script>
+  function displayDummy()
+  {
+	   dummy = !dummy;
+	   if(dummy) {
+		   setMapOnAll(map);
+	   }
+	   else
+	   {
+		   clearMarkers();
+	   }
+	   console.log("dummy = " + dummy);
+  }
+  </script>
   </div>
 </div>
 
