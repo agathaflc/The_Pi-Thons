@@ -5,14 +5,15 @@ var LocationData = [
     [22.3584, 114.1070, "Tsing Yi" ], 
     [22.3916, 113.9709, "Tuen Mun" ], 
 ];
- 
+
+var test; 
+
 function initialize()
 {
     var map = 
         new google.maps.Map(document.getElementById('mapHome'));
     var bounds = new google.maps.LatLngBounds();
     var infowindow = new google.maps.InfoWindow();
-     
     // loop through markers and display content
     for (var i in LocationData)
     {
@@ -27,19 +28,16 @@ function initialize()
             animation: google.maps.Animation.DROP,
             title: p[2]
         });
+
+        test = marker;
      
         // allow each marker to have an info window
         google.maps.event.addListener(marker, 'click', function() {
             infowindow.setContent(this.title);
             infowindow.open(map, this);
         });
-    }
-    
-    // automatically center the map fitting all markers on the screen
-    map.fitBounds(bounds);
-}
- 
-google.maps.event.addDomListener(window, 'load', initialize);
+
+    google.maps.event.addDomListener(window, 'load', initialize);
 
 google.maps.event.addListener(marker, 'click', (function(mm, tt) {
     return function() {
@@ -47,6 +45,12 @@ google.maps.event.addListener(marker, 'click', (function(mm, tt) {
         infowindow.open(map, mm);
     }
 })(marker, p[2]));
+    }
+    
+    // automatically center the map fitting all markers on the screen
+    map.fitBounds(bounds);
+}
+ 
 
 /*var contentString = '<div id="content">'+
   '<div id="siteNotice">'+
@@ -64,7 +68,7 @@ var infowindow = new google.maps.InfoWindow({
 
 $( document ).on("pageshow", "#homePage", function() {
   console.log("initMap");
-  initMap();
+  initialize();
 });
 
 //geolocationPage
