@@ -1,3 +1,5 @@
+/////// HOME PAGE ///////
+
 var LocationData = [
 	// 0    	 1        	2			3			4			5 		6
     // lat     lang        name		MQ2_level	MQ2_status	r_level r_status
@@ -6,7 +8,6 @@ var LocationData = [
     [22.3584, 114.1070, "Tsing Yi", 	0, 		"safe",		0,		"safe"], 
     [22.3916, 113.9709, "Tuen Mun", 	0, 		"safe",		0,		"safe"], 
 ];
-
 
 var dummyData = [
 	// lat     long        name		MQ2_level	MQ2_status	r_level r_status
@@ -19,6 +20,9 @@ var dummyData = [
 	[22.2819, 114.1581, "Central", 		0, 		"safe",		0,		"safe"],
 	[22.5144, 114.0657, "Lok Ma Chau", 	0, 		"safe",		0,		"safe"],
 ];
+
+var dummy = false; // If it's false, we don't show the dummy data
+var map;
  
 /* function showHello(){
 	alert("hello");
@@ -91,10 +95,25 @@ function fetch_json()
 }); */
 
 var markers = [];
+var dummyMarkers = [];
+
+// Sets the map on all DUMMY markers in the array.
+function setMapOnAll(map) {
+  for (var i = 0; i < dummyMarkers.length; i++) {
+    dummyMarkers[i].setMap(map);
+  }
+  console.log("showMarkers");
+}
+
+// Removes the markers from the map, but keeps them in the array.
+function clearMarkers() {
+  setMapOnAll(null);
+  console.log("clearMarkers");
+}
 
 function initialize()
 {
-    var map = 
+    map = 
         new google.maps.Map(document.getElementById('mapHome'));    
 	var bounds = new google.maps.LatLngBounds();
     var infowindow = new google.maps.InfoWindow();
@@ -136,9 +155,45 @@ function initialize()
 			}
 		})(marker, p[2])); */
     }
-    
+	
+	// initialize dummy markers
+	for (var i in dummyData)
+	{
+		var p = dummyData[i];
+		var latlng = new google.maps.LatLng(p[0], p[1]);
+		bounds.extend(latlng);
+		
+		var marker = new google.maps.Marker({
+			position: latlng,
+			map: map,
+			draggable: false,
+			optimized: false,
+			//animation: google.maps.Animation.DROP,
+			title: p[2] + " " + p[3],
+			// change icon image
+			icon: (p[4] != "safe" || p[6] != "safe") ? "http://www.imageupload.co.uk/images/2016/03/17/flashing_red_orangee93bb.gif":"http://maps.google.com/mapfiles/marker_grey.png"
+		});
+		dummyMarkers.push(marker);
+		var contentString = '<div id="content">'+p[3]+'</div>';
+	 
+		// allow each marker to have an info window
+		google.maps.event.addListener(marker, 'click', function() {
+			infowindow.setContent(this.title + contentString);
+			//infowindow.setContent(contentString);
+			infowindow.open(map, this);
+		});
+		
+		google.maps.event.addDomListener(window, 'load', initialize);
+	}
+	
     // automatically center the map fitting all markers on the screen
     map.fitBounds(bounds);
+	
+	// when we don't want to show dummy data (dummy == false), hide the dummy markers
+	if(!dummy)
+	{
+		clearMarkers();
+	}
 	
 	//setInterval("displayMarkers(LocationData, map)", 3000);
 }
@@ -154,7 +209,7 @@ function updateMarker(markers, LocationData)
 		//console.log(i);
 		var p = LocationData[i];
 		var yes = (p[4] != "safe" || p[6] != "safe")
-		console.log(yes);
+		//console.log(yes);
 		markers[i].setIcon((p[4] != "safe" || p[6] != "safe") ? "http://www.imageupload.co.uk/images/2016/03/17/flashing_red_orangee93bb.gif":"http://maps.google.com/mapfiles/marker_grey.png"); 
 		//console.log(p[4] + p[6])
 	}
@@ -162,6 +217,7 @@ function updateMarker(markers, LocationData)
 
 function start_timer()
 {
+	fetch_json();
 	setInterval("fetch_json()", 3000);
 	setInterval("updateMarker(markers, LocationData)", 3000);
 }
@@ -187,7 +243,8 @@ $( document ).on("pageshow", "#homePage", function() {
   initialize();
 });
 
-//geolocationPage
+
+/////// geolocationPage ///////
 var x = document.getElementById("geoLocation");
 function getLocation() {
     if (navigator.geolocation) {
@@ -206,7 +263,7 @@ $(document).on('click', '#getGeolocation', function(){
     getLocation();
 });
 
-//map page
+/////// map page ///////
 var y = document.getElementById("map-canvas");
 var mapLatitude;
 var mapLongitude;
@@ -259,7 +316,7 @@ $( document ).on( "pageshow", "#mapPage", function( event ) {
   getMapLocation();
 });
 
-//directionsPage
+/////// directionsPage ///////
 var directionsDisplay;
 var directionsService = new google.maps.DirectionsService();
 var directionsMap;
