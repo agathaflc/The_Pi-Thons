@@ -1,9 +1,8 @@
 [
 {
-time: Tue Mar  8 21:56:09 2016,
-MQ2_level: 50,
-MQ2_status: Safe,
+time: Thu Mar 10 21:38:16 2016,
+MQ2_level: 54,
+MQ2_status: DANGEROUS,
 radiation_level: 0,
-radiation_status: radiation status
-}
+radiation_status: radiation_status}
 ]

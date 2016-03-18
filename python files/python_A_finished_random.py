@@ -44,7 +44,7 @@ mq2_sensor=8
 #GPIO.setup(digital, GPIO.IN)
 
 mq2_status = ""
-rad_status = "radiation status"
+rad_status = "radiation_status"
 rad_level = 0
 
 while True:
@@ -101,11 +101,11 @@ while True:
             ## WRITE THE FILE IN JSON FORMAT ##
             myfile.write("[\n")
             myfile.write("{\n")
-            one_item = 'time: ' + time.ctime() + ',\n' + \
-                       'MQ2_level: ' + str(reading_sum) + ',\n' + \
-                       'MQ2_status: ' + mq2_status + ',\n' + \
-                       'radiation_level: ' + str(rad_level) + ',\n' + \
-                       'radiation_status: ' + rad_status + '\n}\n]'
+            one_item = '"time": "' + time.ctime() + '",\n' + \
+                       '"MQ2_level": ' + str(reading_sum) + ',\n' + \
+                       '"MQ2_status": "' + mq2_status + '",\n' + \
+                       '"radiation_level": ' + str(rad_level) + ',\n' + \
+                       '"radiation_status": "' + rad_status + '"\n}\n]'
             myfile.write(one_item)
             myfile.close()
             

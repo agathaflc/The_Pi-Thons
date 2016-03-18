@@ -11,7 +11,10 @@
   </script>
 </head>
 <body>
+<<<<<<< HEAD
   
+=======
+>>>>>>> master
   <script>
   $(document).ready(function() { 
   // http request 
