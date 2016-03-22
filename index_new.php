@@ -47,6 +47,9 @@
 
   <div role="main" class="ui-content">
     <h1>This is the home page</h1>
+
+    
+    
     <div id="textDisplay">
 	
   </div>
@@ -75,10 +78,15 @@
 
 <div data-role="page" id="aboutPage">
   <?php include("header.php") ?>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script> 
+
 
   <div role="main" class="ui-content">
     <h1>This is the about page</h1>
   </div>
+  
+  <div id="linechart_material" style="width: 900px; height: 500px"></div>
+  
   <?php include("footer.php") ?>
   <!--?php include_once("footer.php"); ?-->
 </div>
@@ -141,5 +149,6 @@
     <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCTZea67jn4YSPIGu0dNTHRyB1jnvo1Q00"></script>
     <script src="geolocation.js"></script>
+	<script src="display_graphs.js"></script>
 </body>
 </html>
