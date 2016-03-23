@@ -47,6 +47,9 @@
 
   <div role="main" class="ui-content">
     <h1>This is the home page</h1>
+
+    
+    
     <div id="textDisplay">
 	
   </div>
