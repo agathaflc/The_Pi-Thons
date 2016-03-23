@@ -3,7 +3,7 @@
 var LocationData = [
 	// 0    	 1        	2			3			4			5 		6
     // lat     lang        name		MQ2_level	MQ2_status	r_level r_status
-    [22.3816, 114.2733, "Sai Kung", 	0, 		"safe",		0,		"safe"], 
+    [22.3816, 114.2733, "Sai Kung", 	10, 		"safe",		0,		"safe"], 
     [22.2770, 114.176937, "Wan Chai", 	0, 		"safe",		0,		"safe"], 
     [22.3584, 114.1070, "Tsing Yi", 	0, 		"safe",		0,		"safe"], 
     [22.3916, 113.9709, "Tuen Mun", 	0, 		"safe",		0,		"safe"], 
@@ -107,28 +107,6 @@ function fetch_json()
 				LocationData[3][6] = data[i].radiation_status;
 			}
 		}
-	/*   var items = [];
-	  var wholeObj ="";
-	  var counter = 1;
-
-	  $.each( data, function( key, val ) {
-		//var allObjInfo = "";
-		for (leftItem in val){
-		  objInfo = val[leftItem];
-		  LocationData[0].push(objInfo);
-		  //allObjInfo = allObjInfo + objInfo;
-		  counter = counter + 1;
-		  //everything = everything + allObjInfo;
-		  //$("#textDisplay").html(allObjInfo);
-		}
-		//document.write(allObjInfo);
-		//alert(allObjInfo);
-		//alert (everything);
-		//wholeObj = wholeObj + allObjInfo;
-		//console.log("there's an error here");
-	  });
-	  //alert(items);
-	  //$("#textDisplay").html(wholeObj);*/
 	}); 
 }
 
@@ -175,16 +153,24 @@ function initialize()
             draggable: false,
 			optimized: false,
             //animation: google.maps.Animation.DROP,
-            title: p[2] + " " + p[3],
+            title: p[2],
 			// change icon image
 			icon: (p[4] != "safe" || p[6] != "safe") ? "http://www.imageupload.co.uk/images/2016/03/17/flashing_red_orangee93bb.gif":"http://maps.google.com/mapfiles/marker_grey.png"
         });
 		markers.push(marker);
-		var contentString = '<div id="content">'+p[3]+'</div>';
+		var contentString = '<div id="content">'+
+		  '<div id="siteNotice">'+
+		  '</div>'+
+		  
+		  '<div id="bodyContent">'+
+		  '<p>Smoke level: </p>'+
+		  '</div>'+
+		  '</div>';
+		
      
         // allow each marker to have an info window
         google.maps.event.addListener(marker, 'click', function() {
-            infowindow.setContent(this.title + contentString);
+            infowindow.setContent(this.title + '<p>Smoke level: '+p[3]+'</p>');
 			//infowindow.setContent(contentString);
             infowindow.open(map, this);
         });
