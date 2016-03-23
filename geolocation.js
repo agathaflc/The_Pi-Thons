@@ -155,7 +155,10 @@ function initialize()
             //animation: google.maps.Animation.DROP,
             title: p[2],
 			// change icon image
-			icon: (p[4] != "safe" || p[6] != "safe") ? "http://www.imageupload.co.uk/images/2016/03/17/flashing_red_orangee93bb.gif":"http://maps.google.com/mapfiles/marker_grey.png"
+			icon: (p[4] != "safe" || p[6] != "safe") ? "http://www.imageupload.co.uk/images/2016/03/17/flashing_red_orangee93bb.gif":"http://maps.google.com/mapfiles/marker_grey.png",
+			customInfo: "Smoke and radiation level",
+			customMQ2: p[3],
+			customRadiation: p[5]
         });
 		markers.push(marker);
 		var contentString = '<div id="content">'+
@@ -166,11 +169,13 @@ function initialize()
 		  '<p>Smoke level: </p>'+
 		  '</div>'+
 		  '</div>';
-		
-     
+		//var x = 3;
+		//console.log(p[3]);
         // allow each marker to have an info window
         google.maps.event.addListener(marker, 'click', function() {
-            infowindow.setContent(this.title + '<p>Smoke level: '+p[3]+'</p>');
+			//console.log(p[3]);
+			//var p = LocationData[i];
+            infowindow.setContent(this.title + '<p>' +this.customMQ2 + '</p>');
 			//infowindow.setContent(contentString);
             infowindow.open(map, this);
         });
@@ -200,14 +205,15 @@ function initialize()
 			//animation: google.maps.Animation.DROP,
 			title: p[2] + " " + p[3],
 			// change icon image
-			icon: (p[4] != "safe" || p[6] != "safe") ? "http://www.imageupload.co.uk/images/2016/03/17/flashing_red_orangee93bb.gif":"http://maps.google.com/mapfiles/marker_grey.png"
+			icon: (p[4] != "safe" || p[6] != "safe") ? "http://www.imageupload.co.uk/images/2016/03/17/flashing_red_orangee93bb.gif":"http://maps.google.com/mapfiles/marker_grey.png",
+			customInfo: "Smoke and radiation level"
 		});
 		dummyMarkers.push(marker);
 		var contentString = '<div id="content">'+p[3]+'</div>';
 	 
 		// allow each marker to have an info window
 		google.maps.event.addListener(marker, 'click', function() {
-			infowindow.setContent(this.title + contentString);
+			infowindow.setContent(this.title + '<p>' +this.customInfo + '</p>');
 			//infowindow.setContent(contentString);
 			infowindow.open(map, this);
 		});
