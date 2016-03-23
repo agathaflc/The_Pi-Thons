@@ -3,7 +3,7 @@
 var LocationData = [
 	// 0    	 1        	2			3			4			5 		6
     // lat     lang        name		MQ2_level	MQ2_status	r_level r_status
-    [22.3816, 114.2733, "Sai Kung", 	0, 		"safe",		0,		"safe"], 
+    [22.3816, 114.2733, "Sai Kung", 	10, 		"safe",		0,		"safe"], 
     [22.2770, 114.176937, "Wan Chai", 	0, 		"safe",		0,		"safe"], 
     [22.3584, 114.1070, "Tsing Yi", 	0, 		"safe",		0,		"safe"], 
     [22.3916, 113.9709, "Tuen Mun", 	0, 		"safe",		0,		"safe"], 
@@ -11,15 +11,47 @@ var LocationData = [
 
 var dummyData = [
 	// lat     long        name		MQ2_level	MQ2_status	r_level r_status
-	[22.3133, 114.2258, "Kwun Tong", 	0, 		"safe",		0,		"safe"],
+	[22.3133, 114.2258, "Kwun Tong", 	0, 		"unsafe",		0,		"safe"],
 	[22.3225, 114.1706, "Mong Kok", 	0, 		"safe",		0,		"safe"],
 	[22.2940, 114.1712, "Tsim Sha Tsui",0, 		"safe",		0,		"safe"],
 	[22.3133, 114.0433, "Disneyland", 	0, 		"safe",		0,		"safe"],
-	[22.3089, 113.9144, "Airport", 		0, 		"safe",		0,		"safe"],
+	[22.3089, 113.9144, "Airport", 		0, 		"safe",		0,		"unsafe"],
 	[22.3750, 114.1833, "Sha Tin", 		0, 		"safe",		0,		"safe"],
 	[22.2819, 114.1581, "Central", 		0, 		"safe",		0,		"safe"],
-	[22.5144, 114.0657, "Lok Ma Chau", 	0, 		"safe",		0,		"safe"],
+	[22.5144, 114.0657, "Lok Ma Chau", 	0, 		"unsafe",		0,		"safe"],
+	[22.442707, 114.128334, "Lam Tsuen",0, 		"safe",		0,		"safe"],
+	[22.3969, 114.1959, "Fo Tan", 		0, 		"safe",		0,		"safe"],
+	[22.3748, 114.1861, "Che Kung Temple Station",0,"safe",	0,		"safe"],
+	[22.3686, 114.1131, "Tsuen Wan", 	0, 		"safe",		0,		"safe"],
+	[22.3549, 114.0840, "Kwai Tsing", 	0, 		"safe",		0,		"safe"],
+	[22.4456, 114.0222, "Yuen Long", 	0, 		"safe",		0,		"safe"],
+	[22.3167, 114.1833, "Kowloon City", 0, 		"unsafe",		0,		"unsafe"],
+	[22.3531, 114.1871, "Lion Rock", 	0, 		"safe",		0,		"safe"],
+	[22.3307, 114.1622, "Sham Shui Po", 0, 		"safe",		0,		"safe"],
+	[22.3335, 114.1969, "Wong Tai Sin",	0, 		"unsafe",		0,		"safe"],
+	[22.2459, 114.1759, "Ocean Park", 	0, 		"safe",		0,		"safe"],
+	[22.4508, 114.1642, "Tai Po", 		0, 		"unsafe",		0,		"safe"],
+	[22.4221, 114.2324, "Ma On Shan", 	0, 		"safe",		0,		"safe"],
+	[22.3154, 114.2193, "Ngau Tau Kok", 0, 		"unsafe",		0,		"safe"],
+	[22.3038, 114.1830, "Hung Hom", 	0, 		"safe",		0,		"safe"],
+	[22.2700, 114.2400, "Chai Wan", 	0, 		"safe",		0,		"unsafe"],
+	[22.2789, 114.2289, "Shau Kei Wan Station",0,"safe",	0,		"safe"],
+	[22.3224, 114.2580, "Po Lam", 		0, 		"safe",		0,		"safe"],
+	[22.2950, 114.2710, "Lohas Park", 	0, 		"safe",		0,		"safe"],
+	[22.3549, 114.0840, "Kwai Tsing", 	0, 		"safe",		0,		"safe"],
+	[22.4456, 114.0222, "Yuenn Long", 	0, 		"safe",		0,		"safe"],
+	[22.2775, 114.2392, "Heng Fa Chuen",0, 		"unsafe",		0,		"safe"],
+	[22.3068, 114.2330, "Lam Tin", 		0, 		"unsafe",		0,		"safe"],
+	[22.3130, 114.1705, "Yau Ma Tei", 	0, 		"safe",		0,		"safe"],
+	[22.3412, 114.2011, "Diamond Hill",	0, 		"safe",		0,		"unsafe"],
+	[22.2869, 113.9436, "Tung Chung", 	0, 		"unsafe",		0,		"safe"],
+	[22.2000, 114.1167, "Lamma Island", 0, 		"safe",		0,		"safe"],
+	[22.4511, 114.1611, "Tai Wo Station",0, 	"safe",		0,		"safe"],
+	
 ];
+
+// Data for graphs
+var saikung_mq2 = []
 
 var dummy = false; // If it's false, we don't show the dummy data
 var map;
@@ -38,6 +70,17 @@ function fetch_json()
 			if (data[i].name == "saikung")
 			{
 				LocationData[0][3] = data[i].MQ2_level; // Set level of mq2
+				// append the mq2 level in saikung to the saikung_mq2 array
+				/*if (saikung_mq2.length > 10)
+				{
+					// delete the oldest data, then append the new one
+					saikung_mq2.remove(0);
+					saikung_mq2.push(data[i].MQ2_level);
+				}
+				else
+				{
+					saikung_mq2.push(data[i].MQ2_level);
+				}*/
 				LocationData[0][4] = data[i].MQ2_status;
 				LocationData[0][5] = data[i].radiation_level; // Set level of radiation
 				LocationData[0][6] = data[i].radiation_status;
@@ -64,28 +107,6 @@ function fetch_json()
 				LocationData[3][6] = data[i].radiation_status;
 			}
 		}
-	/*   var items = [];
-	  var wholeObj ="";
-	  var counter = 1;
-
-	  $.each( data, function( key, val ) {
-		//var allObjInfo = "";
-		for (leftItem in val){
-		  objInfo = val[leftItem];
-		  LocationData[0].push(objInfo);
-		  //allObjInfo = allObjInfo + objInfo;
-		  counter = counter + 1;
-		  //everything = everything + allObjInfo;
-		  //$("#textDisplay").html(allObjInfo);
-		}
-		//document.write(allObjInfo);
-		//alert(allObjInfo);
-		//alert (everything);
-		//wholeObj = wholeObj + allObjInfo;
-		//console.log("there's an error here");
-	  });
-	  //alert(items);
-	  //$("#textDisplay").html(wholeObj);*/
 	}); 
 }
 
@@ -132,16 +153,24 @@ function initialize()
             draggable: false,
 			optimized: false,
             //animation: google.maps.Animation.DROP,
-            title: p[2] + " " + p[3],
+            title: p[2],
 			// change icon image
 			icon: (p[4] != "safe" || p[6] != "safe") ? "http://www.imageupload.co.uk/images/2016/03/17/flashing_red_orangee93bb.gif":"http://maps.google.com/mapfiles/marker_grey.png"
         });
 		markers.push(marker);
-		var contentString = '<div id="content">'+p[3]+'</div>';
+		var contentString = '<div id="content">'+
+		  '<div id="siteNotice">'+
+		  '</div>'+
+		  
+		  '<div id="bodyContent">'+
+		  '<p>Smoke level: </p>'+
+		  '</div>'+
+		  '</div>';
+		
      
         // allow each marker to have an info window
         google.maps.event.addListener(marker, 'click', function() {
-            infowindow.setContent(this.title + contentString);
+            infowindow.setContent(this.title + '<p>Smoke level: '+p[3]+'</p>');
 			//infowindow.setContent(contentString);
             infowindow.open(map, this);
         });
@@ -201,7 +230,7 @@ function initialize()
 function updateMarker(markers, LocationData)
 {
 	console.log("updateMarker");
-	var n = LocationData.length;
+	var n = markers.length;
 	//console.log("n = " + n);
 	var i;
 	for (i=0; i<n; i++)
@@ -372,3 +401,4 @@ function calcRoute() {
 $( document ).on( "pageshow", "#directionsPage", function( event ) {
   getDirectionsLocation();
 });
+
