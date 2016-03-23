@@ -156,9 +156,10 @@ function initialize()
             title: p[2],
 			// change icon image
 			icon: (p[4] != "safe" || p[6] != "safe") ? "http://www.imageupload.co.uk/images/2016/03/17/flashing_red_orangee93bb.gif":"http://maps.google.com/mapfiles/marker_grey.png",
-			customInfo: "Smoke and radiation level",
 			customMQ2: p[3],
-			customRadiation: p[5]
+			MQ2_sd: p[4],
+			customRadiation: p[5],
+			radiation_sd: p[6]
         });
 		markers.push(marker);
 		var contentString = '<div id="content">'+
@@ -175,7 +176,9 @@ function initialize()
         google.maps.event.addListener(marker, 'click', function() {
 			//console.log(p[3]);
 			//var p = LocationData[i];
-            infowindow.setContent(this.title + '<p>' +this.customMQ2 + '</p>');
+            infowindow.setContent('<h3><b>' + this.title + '</b></h3>' + 
+            	'<p> Smoke level: ' + this.customMQ2 + ' <b>(' + this.MQ2_sd + ')</b>' + '</br>' +
+            	'Radiation level: ' + this.customRadiation + ' <b>(' + this.radiation_sd + ')</b>' +'</p>');
 			//infowindow.setContent(contentString);
             infowindow.open(map, this);
         });
