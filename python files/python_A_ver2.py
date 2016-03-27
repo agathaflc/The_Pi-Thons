@@ -6,6 +6,9 @@ the place is dangerous or not.
 3. The "y" or "n" result will be written into a .txt file called current.txt
 4. Then the array storing the 100 values will be reset to empty, then
 the program repeats the same process.
+
+Disclaimer: some functions are taken from http://sandboxelectronics.com/?p=165
+http://raspi.tv/2013/controlled-shutdown-duration-test-of-pi-model-a-with-2-cell-lipo
 '''
 
 import RPi.GPIO as GPIO
@@ -16,29 +19,16 @@ import subprocess
 import smtplib
 import string
 import global_var
+import math
 from time import gmtime, strftime
 
 GPIO.setmode(GPIO.BCM)
 
-##with open('E:/Mika/University/Spring 2016/PCup/abc.txt') as fh:
-##    sum = 0 # initialize here, outside the loop
-##    count = 0 # and a line counter
-##    
-##    for line in fh:
-##            
-##        count += 1 # increment the counter
-##        sum += float(line.split()[1]) # add here, not in a nested loop
-##    average = sum / count
-##        
-##    if average < 20 and average > 0:
-##        print("y")
-##    else:
-##        print("n")
 
 ########## Program variables you might want to tweak ###########################
 # voltage divider connected to channel 0 of mcp3002
 adcs = [0] # 0 battery voltage divider
-reps = 30 # how many times to take each measurement for averaging
+reps = 100 # how many times to take each measurement for averaging
 # cutoff = 7.5 # cutoff voltage for the battery
 # previous_voltage = cutoff + 1 # initial value
 time_between_readings = 5 # seconds between clusters of readings
@@ -48,6 +38,25 @@ SPICLK = 8             # FOUR SPI ports on the ADC
 SPIMISO = 23
 SPIMOSI = 24
 SPICS = 25
+
+# RO_CLEAR_AIR_FACTOR=(Sensor resistance in clean air)/RO,
+# which is derived from the chart in datasheet
+RO_CLEAN_FACTOR = 9.83
+
+SmokeCurve =[2.3,0.53,-0.44]
+
+Ro = 10.0 # Ro is initialized to 10 kilo ohms
+RL_VALUE = 5 # in kilo ohms
+
+# Latitude and longitude
+latitude = global_var.location_latitude
+longitude = global_var.location_longitude
+
+loc_name = global_var.loc_name #location name
+
+# intervals
+calibration_sample_interval = 0.05
+read_sample_interval = 0.05
 
 # read SPI data from MCP3002 chip, 2 possible adc's (0 & 1)
 # this uses a bitbang method rather than Pi hardware spi
@@ -89,6 +98,86 @@ def readadc(adcnum, clockpin, mosipin, misopin, cspin):
     adcout /= 2       # first bit is 'null' so drop it
     return adcout
 
+'''
+/****************** MQResistanceCalculation ****************************************
+Input:   raw_adc - raw value read from adc, which represents the voltage
+Output:  the calculated sensor resistance
+Remarks: The sensor and the load resistor forms a voltage divider. Given the voltage
+         across the load resistor and its resistance, the resistance of the sensor
+         could be derived.
+************************************************************************************/
+'''
+def MQResistanceCalculation(raw_adc):
+    return ( (float(RL_VALUE)*(1023-raw_adc)/raw_adc))
+
+'''
+/***************************** MQCalibration ****************************************
+Input:   mq_pin - analog channel
+Output:  Ro of the sensor
+Remarks: This function assumes that the sensor is in clean air. It use  
+         MQResistanceCalculation to calculates the sensor resistance in clean air 
+         and then divides it with RO_CLEAN_AIR_FACTOR. RO_CLEAN_AIR_FACTOR is about 
+         10, which differs slightly between different sensors.
+************************************************************************************/ 
+'''
+def MQCalibration(adcnum, SPICLK, SPIMOSI, SPIMISO, SPICS):
+    val = 0.0
+
+    for i in range(reps): # take multiple samples
+        val += MQResistanceCalculation(readadc(adcnum, SPICLK, SPIMOSI, SPIMISO, SPICS))
+        time.sleep(calibration_sample_interval)
+
+    val = val/reps # calculate the average value
+    val = val/RO_CLEAN_FACTOR # divided by RO_CLEAN_FACTOR yields the Ro according to the chart in the datasheet
+
+    return val
+
+'''
+/*****************************  MQRead *********************************************
+Input:   mq_pin - analog channel
+Output:  Rs of the sensor
+Remarks: This function use MQResistanceCalculation to caculate the sensor resistenc (Rs).
+         The Rs changes as the sensor is in the different consentration of the target
+         gas. The sample times and the time interval between samples could be configured
+         by changing the definition of the macros.
+************************************************************************************/
+'''
+def MQRead(adcnum, SPICLK, SPIMOSI, SPIMISO, SPICS):
+    rs = 0.0
+
+    for i in range(reps): # take multiple samples
+        rs += MQResistanceCalculation(readadc(adcnum, SPICLK, SPIMOSI, SPIMISO, SPICS))
+        time.sleep(read_sample_interval)
+
+    rs = rs/reps # calculate the average value
+
+    return rs
+
+'''
+/*****************************  MQGetGasPercentage **********************************
+Input:   rs_ro_ratio - Rs divided by Ro
+Output:  ppm of the target gas
+Remarks: This function passes different curves to the MQGetPercentage function which 
+         calculates the ppm (parts per million) of the target gas.
+************************************************************************************/ 
+'''
+def MQGetGasPercentage(rs_ro_ratio):
+    return MQGetPercentage(rs_ro_ratio,SmokeCurve)
+
+'''
+/*****************************  MQGetPercentage **********************************
+Input:   rs_ro_ratio - Rs divided by Ro
+         pcurve      - pointer to the curve of the target gas
+Output:  ppm of the target gas
+Remarks: By using the slope and a point of the line. The x(logarithmic value of ppm) 
+         of the line could be derived if y(rs_ro_ratio) is provided. As it is a 
+         logarithmic coordinate, power of 10 is used to convert the result to non-logarithmic 
+         value.
+************************************************************************************/ 
+'''
+def MQGetPercentage (rs_ro_ratio, pcurve = []):
+    return (pow(10,( ((math.log(rs_ro_ratio)-pcurve[1])/pcurve[2]) + pcurve[0])))
+
 
 GPIO_readings=[]
 reading_sum = 0
@@ -117,38 +206,21 @@ try:
         for adcnum in adcs:
             # read the analog pin
             adctot = 0
-            ## TEMPORARY RADIATION LEVEL
-            rad_level = 0
+            
+            rad_level = 0 ## TEMPORARY RADIATION LEVEL
             for i in range(reps):
                 read_adc = readadc(adcnum, SPICLK, SPIMOSI, SPIMISO, SPICS)
                 adctot += read_adc
                 time.sleep(0.05)
             read_adc = adctot / reps / 1.0
             print (read_adc)
-##        if (len(GPIO_readings)<100):       
-##            ## Take values from GPIO pin, put in array
-##            ## INSERT CODE FOR GETTING GPIO READING HERE ##
-##            input_value = GPIO.input(mq2_sensor)
-##            # (for now, i'm using random numbers)
-##            #GPIOreading = random.randint(0,1)
-##            GPIOreading = input_value
-##            print ("GPIOreading: " + str(GPIOreading))
-##            GPIO_readings.append(GPIOreading)
-##            reading_sum += GPIOreading
-##            
-##        else : # if we already have 100 readings
-##            # get the average
-##            print ("The length of the GPIO_readings list is:")
-##            print (len(GPIO_readings))
-##            #average_reading = reading_sum / 100
-##            print ("Sum: " + str(reading_sum))
-##            # reset the list
-##            GPIO_readings=[]
+
+            mq2_lev = (MQGetGasPercentage(MQRead(adcnum, SPICLK, SPIMOSI, SPIMISO, SPICS)/Ro) )
+            print(mq2_lev)
+
             if (read_adc > 100):
                 mq2_status = "DANGEROUS"
                 print (mq2_status)
-                # TODO: write "y" in current.txt file
-                # Store into .txt file
                 filename = global_var.current_status
                 myfile = open(filename, 'wt') # Open the file for writing
                 ## WRITE THE FILE IN JSON FORMAT ##
@@ -164,8 +236,6 @@ try:
             else :
                 mq2_status = "Safe";
                 print (mq2_status)
-                # TODO: write "n" in current.txt file
-                # Store into .txt file
                 filename = global_var.current_status
                 myfile = open(filename, 'wt') # Open the file for writing
 

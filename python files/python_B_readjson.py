@@ -46,7 +46,7 @@ while True:
                 # new data we want to add to file
                 new_data = {'MQ2_level': firstSensorData['MQ2_level'],
                            'MQ2_status': firstSensorData['MQ2_status'], 
-                           'radiation_level' firstSensorData['radiation_level'],
+                           'radiation_level': firstSensorData['radiation_level'],
                            'radiation_status': firstSensorData['radiation_status']}
 
                 # read record.json 
