@@ -20,6 +20,7 @@ import subprocess
 import smtplib
 import string
 import global_var
+import stuff
 import math
 from time import gmtime, strftime
 
