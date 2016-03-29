@@ -32,5 +32,3 @@ elif (loc_name == "tsingyi"):
 elif (loc_name == "tuenmun"):
     location_latitude = 22.3916
     location_longitude = 113.9709
-
-
