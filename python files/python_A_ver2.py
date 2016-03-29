@@ -3,9 +3,10 @@ Python A
 1. This program will take values from the GPIO pin every 0.1 seconds.
 2. After every 100 results, the program will take an average and decide if
 the place is dangerous or not.
-3. The "y" or "n" result will be written into a .txt file called current.txt
-4. Then the array storing the 100 values will be reset to empty, then
-the program repeats the same process.
+3. If it is dangerous, the program will play a sound as an alarm to warn
+nearby users.
+4. The details (time, smoke/radiation status, smoke/radiation level) will
+be recorded into a .json file (currentLocationName.json)
 
 Disclaimer: some functions are taken from http://sandboxelectronics.com/?p=165
 http://raspi.tv/2013/controlled-shutdown-duration-test-of-pi-model-a-with-2-cell-lipo
@@ -23,6 +24,15 @@ import math
 from time import gmtime, strftime
 
 GPIO.setmode(GPIO.BCM)
+
+## Set up alarm sound ##
+import pygame.mixer
+from pygame.mixer import Sound
+import time
+
+pygame.mixer.init()
+
+mySound = Sound ("/home/pi/musicbox/samples/elec_beep.wav")
 
 
 ########## Program variables you might want to tweak ###########################
@@ -108,7 +118,13 @@ Remarks: The sensor and the load resistor forms a voltage divider. Given the vol
 ************************************************************************************/
 '''
 def MQResistanceCalculation(raw_adc):
-    return ( (float(RL_VALUE)*(1023-raw_adc)/raw_adc))
+    #print("MQResistanceCalculation", (float(RL_VALUE)*(1023-raw_adc)/raw_adc))
+    result = 0
+    if (raw_adc<=0):
+        result = 9999999999
+    else:
+        result = (float(RL_VALUE)*(1023-raw_adc)/raw_adc)
+    return result
 
 '''
 /***************************** MQCalibration ****************************************
@@ -130,6 +146,7 @@ def MQCalibration(adcnum, SPICLK, SPIMOSI, SPIMISO, SPICS):
     val = val/reps # calculate the average value
     val = val/RO_CLEAN_FACTOR # divided by RO_CLEAN_FACTOR yields the Ro according to the chart in the datasheet
 
+    print("MQcalibration", val)
     return val
 
 '''
@@ -151,6 +168,7 @@ def MQRead(adcnum, SPICLK, SPIMOSI, SPIMISO, SPICS):
 
     rs = rs/reps # calculate the average value
 
+    print("MQRead", rs)
     return rs
 
 '''
@@ -162,7 +180,9 @@ Remarks: This function passes different curves to the MQGetPercentage function w
 ************************************************************************************/ 
 '''
 def MQGetGasPercentage(rs_ro_ratio):
-    return MQGetPercentage(rs_ro_ratio,SmokeCurve)
+    x = MQGetPercentage(rs_ro_ratio,SmokeCurve)
+    print("MQGetGasPercentage", x)
+    return x
 
 '''
 /*****************************  MQGetPercentage **********************************
@@ -176,7 +196,9 @@ Remarks: By using the slope and a point of the line. The x(logarithmic value of 
 ************************************************************************************/ 
 '''
 def MQGetPercentage (rs_ro_ratio, pcurve = []):
-    return (pow(10,( ((math.log(rs_ro_ratio)-pcurve[1])/pcurve[2]) + pcurve[0])))
+    result = (pow(10,( ((math.log(rs_ro_ratio)-pcurve[1])/pcurve[2]) + pcurve[0])))
+    print("MQGetPercentage", result)
+    return result
 
 
 GPIO_readings=[]
@@ -206,7 +228,8 @@ try:
         for adcnum in adcs:
             # read the analog pin
             adctot = 0
-            
+
+            ## the following block will be removed when it comes to the final product
             rad_level = 0 ## TEMPORARY RADIATION LEVEL
             for i in range(reps):
                 read_adc = readadc(adcnum, SPICLK, SPIMOSI, SPIMISO, SPICS)
@@ -221,6 +244,15 @@ try:
             if (read_adc > 100):
                 mq2_status = "DANGEROUS"
                 print (mq2_status)
+
+                # Play alarm sound
+                current_time = time.time()
+                while True:
+                    print("try")
+                    mySound.play()
+                    if(time.time()-current_time > 2):
+                        break
+                    
                 filename = global_var.current_status
                 myfile = open(filename, 'wt') # Open the file for writing
                 ## WRITE THE FILE IN JSON FORMAT ##
@@ -234,7 +266,7 @@ try:
                 myfile.write(one_item)
                 myfile.close()
             else :
-                mq2_status = "Safe";
+                mq2_status = "safe";
                 print (mq2_status)
                 filename = global_var.current_status
                 myfile = open(filename, 'wt') # Open the file for writing
