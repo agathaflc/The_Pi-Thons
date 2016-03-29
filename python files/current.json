@@ -1,8 +1,12 @@
 [
 {
-time: Thu Mar 10 21:38:16 2016,
-MQ2_level: 54,
-MQ2_status: DANGEROUS,
-radiation_level: 0,
-radiation_status: radiation_status}
+  "name": "saikung",
+  "latitude": 13.231,
+  "longitude": 114,1231,
+  "time": "Tue Mar  8 14:56:09 2016",
+  "MQ2_level": 483,
+  "MQ2_status": "unsafe",
+  "radiation_level": 8,
+  "radiation_status": "safe"
+}
 ]
