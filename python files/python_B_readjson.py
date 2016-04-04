@@ -58,16 +58,29 @@ while True:
                 with open(recordFileName) as recordFile:
                         getData = json.load(recordFile)
 
-                # append new data to data from record.json
-                getData.append(new_data)
+                # get the old time
+                for item in getData:
+                        oldTime = item.get("time")
+
+                newTime = new_data[3]
+
+                if (oldTime != newTime):
+                    # append new data to data from record.json
+                    getData.append(new_data)
 
                 # check if there are 1000 or more data entries
                 if (len(getData)>=1000):
                         getData.pop(0) # delete first one
 
+
                 # write new changes into record.json
                 with open(recordFileName, 'w') as writeRecordFile:
                         json.dump(getData, writeRecordFile)
+
+                # check latest time and compare with current time
+                # if times are the same, do not need to write
+                # else write to the file
+
 
         except: # SPECIAL CASE WHEN THE PROGRAM RUNS FOR THE FIRST TIME
                 print("exception")
