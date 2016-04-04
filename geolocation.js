@@ -177,7 +177,7 @@ function initialize()
 			//console.log(p[3]);
 			//var p = LocationData[i];
             infowindow.setContent('<h3><b>' + this.title + '</b></h3>' + 
-            	'<p> Smoke level: ' + this.customMQ2 + ' <b>(' + this.MQ2_sd + ')</b>' + '</br>' +
+            	'<p> Smoke/gas level: ' + this.customMQ2 + ' <b>(' + this.MQ2_sd + ')</b>' + '</br>' +
             	'Radiation level: ' + this.customRadiation + ' <b>(' + this.radiation_sd + ')</b>' +'</p>');
 			//infowindow.setContent(contentString);
             infowindow.open(map, this);

@@ -3,16 +3,17 @@
 import ftplib
 import time
 import global_var
+import stuff
 import json
 
 # where the data will be displayed online
 filename = global_var.current_status
 
 # FTP credentials
-ftp = ftplib.FTP (global_var.host)
+ftp = ftplib.FTP (stuff.host)
 
 # update with username and password
-ftp.login(global_var.username, global_var.password)
+ftp.login(stuff.username, stuff.password)
 
 # variable for current state
 currentState = ''
