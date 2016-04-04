@@ -1,20 +1,22 @@
 ## GLOBAL VARIABLES ##
 
-## File names ##
-# the file names should be modified according to location
-# e.g. if the pi is in Sai Kung, then the file name should
-# be something like "currentSaiKung.json"
-current_status = "current.json"
-status_record = "record.json"
-## These two should be discarded now that we use json
-#current_level = "current_level.txt"
-#level_record = "level_record.txt"
-
 # Location name
 loc_name = "saikung"
 ##loc_name = "wanchai"
 ##loc_name = "tsingyi"
 ##loc_name = "tuenmun"
+
+## File names ##
+# the file names should be modified according to location
+# e.g. if the pi is in Sai Kung, then the file name should
+# be something like "currentSaiKung.json"
+current_status = "current"+loc_name+".json"
+#print(current_status)
+current_status_all4 = "current4.json"
+status_record = "record"+loc_name+".json"
+## These two should be discarded now that we use json
+#current_level = "current_level.txt"
+#level_record = "level_record.txt"
 
 # Location details
 location_latitude = 0

@@ -33,8 +33,8 @@ while True:
 
         firstSensorData = data[0]
 
-        dataNames = ['MQ2_level', 'MQ2_status', 'name', 'radiation_level',
-             'radiation_status', 'time']
+        dataNames = ['name', 'latitude', 'longitude', 'time', 'MQ2_level',
+                     'MQ2_status', 'radiation_level', 'radiation_status']
 
         # print all data values
         for name in dataNames:
@@ -45,7 +45,11 @@ while True:
         # will be removed and the newest data will be added in
         try:
                 # new data we want to add to file
-                new_data = {'MQ2_level': firstSensorData['MQ2_level'],
+                new_data = {'name': firstSensorData['name'],
+                            'latitude': firstSensorData['latitude'],
+                            'longitude': firstSensorData['longitude'],
+                            'time': firstSensorData['time'],
+                            'MQ2_level': firstSensorData['MQ2_level'],
                            'MQ2_status': firstSensorData['MQ2_status'], 
                            'radiation_level': firstSensorData['radiation_level'],
                            'radiation_status': firstSensorData['radiation_status']}
@@ -66,6 +70,7 @@ while True:
                         json.dump(getData, writeRecordFile)
 
         except: # SPECIAL CASE WHEN THE PROGRAM RUNS FOR THE FIRST TIME
+                print("exception")
 
                 # open recordFile to write
                 recordFile = open(recordFileName, 'wt') # Open the file for writing
@@ -75,10 +80,14 @@ while True:
                 recordFile.write("{\n")
 
                 # write data values
-                one_item = 'MQ2_level: ' + firstSensorData['MQ2_level'] + ',\n' + \
-                           'MQ2_status: ' + firstSensorData['MQ2_status'] + ',\n' + \
-                           'radiation_level: ' + firstSensorData['radiation_level'] + ',\n' + \
-                           'radiation_status: ' + firstSensorData['radiation_status'] + '}\n]'
+                one_item = '"name": "' + firstSensorData['name'] + '",\n' + \
+                           '"latitude": ' + str(firstSensorData['latitude']) + ',\n' + \
+                           '"longitude": ' + str(+ firstSensorData['longitude']) + ',\n' + \
+                           '"time": "' + firstSensorData['time'] + '",\n' + \
+                           '"MQ2_level": ' + str(firstSensorData['MQ2_level']) + ',\n' + \
+                           '"MQ2_status": "' + firstSensorData['MQ2_status'] + '",\n' + \
+                           '"radiation_level": ' + str(firstSensorData['radiation_level']) + ',\n' + \
+                           '"radiation_status": "' + firstSensorData['radiation_status'] + '"}\n]'
 
                 # close record.json file
                 recordFile.write(one_item)
