@@ -2,7 +2,7 @@
 
 var LocationData = [
 	// 0    	 1        	2			3			4			5 		6
-    // lat     lang        name		MQ2_level	MQ2_status	r_level r_status
+    // lat     long        name		MQ2_level	MQ2_status	r_level r_status
     [22.3816, 114.2733, "Sai Kung", 	10, 		"safe",		0,		"safe"], 
     [22.2770, 114.176937, "Wan Chai", 	0, 		"safe",		0,		"safe"], 
     [22.3584, 114.1070, "Tsing Yi", 	0, 		"safe",		0,		"safe"], 
@@ -59,10 +59,52 @@ var map;
 /* function showHello(){
 	alert("hello");
 } */
+
+function MergeJSON (o, ob) {
+      for (var z in ob) {
+           o[z] = ob[z];
+      }
+      return o;
+}
 	
 function fetch_json()
 {
 	console.log("fetch_json");
+	//var finalObj = [];
+	$.getJSON("http://ihome.ust.hk/~maresdhayana/cgi-bin/currentsaikung.json", function(data)
+	{
+		// Update data for Sai Kung
+		LocationData[0][3] = data[0].MQ2_level; // Set level of mq2
+		LocationData[0][4] = data[0].MQ2_status;
+		LocationData[0][5] = data[0].radiation_level; // Set level of radiation
+		LocationData[0][6] = data[0].radiation_status;
+	});
+	$.getJSON("http://ihome.ust.hk/~maresdhayana/cgi-bin/currentwanchai.json", function(data)
+	{
+		// Update data for Wan Chai
+		LocationData[1][3] = data[0].MQ2_level; // Set level of mq2
+		LocationData[1][4] = data[0].MQ2_status;
+		LocationData[1][5] = data[0].radiation_level; // Set level of radiation
+		LocationData[1][6] = data[0].radiation_status;
+	});	
+	$.getJSON("http://ihome.ust.hk/~maresdhayana/cgi-bin/currenttsingyi.json", function(data)
+	{
+		// Update data for Tuen Mun
+		LocationData[2][3] = data[0].MQ2_level; // Set level of mq2
+		LocationData[2][4] = data[0].MQ2_status;
+		LocationData[2][5] = data[0].radiation_level; // Set level of radiation
+		LocationData[2][6] = data[0].radiation_status;
+	});
+	$.getJSON("http://ihome.ust.hk/~maresdhayana/cgi-bin/currenttuenmun.json", function(data)
+	{
+		// Update data for Tsing Yi
+		LocationData[3][3] = data[0].MQ2_level; // Set level of mq2
+		LocationData[3][4] = data[0].MQ2_status;
+		LocationData[3][5] = data[0].radiation_level; // Set level of radiation
+		LocationData[3][6] = data[0].radiation_status;
+	});		
+
+	/*
 	$.getJSON("http://ihome.ust.hk/~maresdhayana/cgi-bin/current.json", function(data){
 		var i;
 		for (i=0; i<data.length; i++)
@@ -70,17 +112,6 @@ function fetch_json()
 			if (data[i].name == "saikung")
 			{
 				LocationData[0][3] = data[i].MQ2_level; // Set level of mq2
-				// append the mq2 level in saikung to the saikung_mq2 array
-				/*if (saikung_mq2.length > 10)
-				{
-					// delete the oldest data, then append the new one
-					saikung_mq2.remove(0);
-					saikung_mq2.push(data[i].MQ2_level);
-				}
-				else
-				{
-					saikung_mq2.push(data[i].MQ2_level);
-				}*/
 				LocationData[0][4] = data[i].MQ2_status;
 				LocationData[0][5] = data[i].radiation_level; // Set level of radiation
 				LocationData[0][6] = data[i].radiation_status;
@@ -107,7 +138,7 @@ function fetch_json()
 				LocationData[3][6] = data[i].radiation_status;
 			}
 		}
-	}); 
+	}); */
 }
 
 /* $(document).ready(function() { 
@@ -178,7 +209,7 @@ function initialize()
 			//var p = LocationData[i];
             infowindow.setContent('<h3><b>' + this.title + '</b></h3>' + 
             	'<p> Smoke/gas level: ' + this.customMQ2 + ' <b>(' + this.MQ2_sd + ')</b>' + '</br>' +
-            	'Radiation level: ' + this.customRadiation + ' <b>(' + this.radiation_sd + ')</b>' +'</p>');
+            	'Radiation level: ' + this.customRadiation + '  µSv <b>(' + this.radiation_sd + ')</b>' +'</p>');
 			//infowindow.setContent(contentString);
             infowindow.open(map, this);
         });
