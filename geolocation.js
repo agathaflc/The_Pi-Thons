@@ -104,47 +104,7 @@ function fetch_json()
 		LocationData[3][6] = data[0].radiation_status;
 	});		
 
-	/*
-	$.getJSON("http://ihome.ust.hk/~maresdhayana/cgi-bin/current.json", function(data){
-		var i;
-		for (i=0; i<data.length; i++)
-		{
-			if (data[i].name == "saikung")
-			{
-				LocationData[0][3] = data[i].MQ2_level; // Set level of mq2
-				LocationData[0][4] = data[i].MQ2_status;
-				LocationData[0][5] = data[i].radiation_level; // Set level of radiation
-				LocationData[0][6] = data[i].radiation_status;
-			}
-			else if (data[i].name == "wanchai")
-			{
-				LocationData[1][3] = data[i].MQ2_level; // Set level of mq2
-				LocationData[1][4] = data[i].MQ2_status;
-				LocationData[1][5] = data[i].radiation_level; // Set level of radiation
-				LocationData[1][6] = data[i].radiation_status;
-			}
-			else if (data[i].name == "tuenmun")
-			{
-				LocationData[2][3] = data[i].MQ2_level; // Set level of mq2
-				LocationData[2][4] = data[i].MQ2_status;
-				LocationData[2][5] = data[i].radiation_level; // Set level of radiation
-				LocationData[2][6] = data[i].radiation_status;
-			}
-			else if (data[i].name == "tsingyi")
-			{
-				LocationData[3][3] = data[i].MQ2_level; // Set level of mq2
-				LocationData[3][4] = data[i].MQ2_status;
-				LocationData[3][5] = data[i].radiation_level; // Set level of radiation
-				LocationData[3][6] = data[i].radiation_status;
-			}
-		}
-	}); */
 }
-
-/* $(document).ready(function() { 
-// http request 
-
-}); */
 
 var markers = [];
 var dummyMarkers = [];
@@ -281,14 +241,18 @@ function updateMarker(markers, LocationData)
 		//console.log(yes);
 		markers[i].setIcon((p[4] != "safe" || p[6] != "safe") ? "http://www.imageupload.co.uk/images/2016/03/17/flashing_red_orangee93bb.gif":"http://maps.google.com/mapfiles/marker_grey.png"); 
 		//console.log(p[4] + p[6])
+		markers[i].customMQ2 = p[3];
+		markers[i].MQ2_sd = p[4];
+		markers[i].customRadiation = p[5];
+		markers[i].radiation_sd = p[6];
 	}
 }
 
 function start_timer()
 {
 	fetch_json();
-	setInterval("fetch_json()", 3000);
-	setInterval("updateMarker(markers, LocationData)", 3000);
+	setInterval("fetch_json()", 300);
+	setInterval("updateMarker(markers, LocationData)", 300);
 }
 
 $(document).ready(function() { start_timer(); })
