@@ -45,14 +45,14 @@ while True:
         # will be removed and the newest data will be added in
         try:
                 # new data we want to add to file
-                new_data = {'name': firstSensorData['name'],
+                new_data = {'name': firstSensorData['name'].decode('utf-8'),
                             'latitude': firstSensorData['latitude'],
                             'longitude': firstSensorData['longitude'],
-                            'time': firstSensorData['time'],
+                            'time': firstSensorData['time'].decode('utf-8'),
                             'MQ2_level': firstSensorData['MQ2_level'],
-                           'MQ2_status': firstSensorData['MQ2_status'], 
+                           'MQ2_status': firstSensorData['MQ2_status'].decode('utf-8'), 
                            'radiation_level': firstSensorData['radiation_level'],
-                           'radiation_status': firstSensorData['radiation_status']}
+                           'radiation_status': firstSensorData['radiation_status'].decode('utf-8')}
 
                 # read record.json 
                 with open(recordFileName) as recordFile:
@@ -62,14 +62,14 @@ while True:
                 for item in getData:
                         oldTime = item.get("time")
 
-                newTime = new_data[3]
+                newTime = new_data['time']
 
                 if (oldTime != newTime):
                     # append new data to data from record.json
                     getData.append(new_data)
 
                 # check if there are 1000 or more data entries
-                if (len(getData)>=1000):
+                if (len(getData)>=10):
                         getData.pop(0) # delete first one
 
 
@@ -110,10 +110,14 @@ while True:
 
         # upload record.json file to server
         ftp.storlines ('STOR ' + recordFileName, recordFile2)
-        print ('SUCCESS')
-
         recordFile2.close()
+
+        # upload current.json file to server
+        currentFile = open (currentFileName, 'rb')
+        ftp.storlines('STOR ' + currentFileName, currentFile)
+        currentFile.close()
+        print ('SUCCESS')
 
         #print(states)
 
-        time.sleep(5)
+        time.sleep(2.5)

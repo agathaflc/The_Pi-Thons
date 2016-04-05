@@ -42,7 +42,7 @@ adcs = [0] # 0 battery voltage divider
 reps = 100 # how many times to take each measurement for averaging
 # cutoff = 7.5 # cutoff voltage for the battery
 # previous_voltage = cutoff + 1 # initial value
-time_between_readings = 5 # seconds between clusters of readings
+time_between_readings = 2 # seconds between clusters of readings
 
 # Define Pins/Ports
 SPICLK = 8             # FOUR SPI ports on the ADC 
@@ -56,6 +56,8 @@ RO_CLEAN_FACTOR = 9.83
 
 SmokeCurve =[2.3,0.53,-0.44]
 
+threshold_ppm = 450
+
 Ro = 10.0 # Ro is initialized to 10 kilo ohms
 RL_VALUE = 5 # in kilo ohms
 
@@ -67,7 +69,7 @@ loc_name = global_var.loc_name #location name
 
 # intervals
 calibration_sample_interval = 0.05
-read_sample_interval = 0.05
+read_sample_interval = 0.02
 
 # read SPI data from MCP3002 chip, 2 possible adc's (0 & 1)
 # this uses a bitbang method rather than Pi hardware spi
@@ -222,7 +224,7 @@ GPIO.setup(SPICLK, GPIO.OUT)
 GPIO.setup(SPICS, GPIO.OUT)
 
 mq2_status = ""
-rad_status = "radiation status"
+rad_status = "safe"
 
 try:
     while True:
@@ -232,24 +234,24 @@ try:
 
             ## the following block will be removed when it comes to the final product
             rad_level = 0 ## TEMPORARY RADIATION LEVEL
-            for i in range(reps):
-                read_adc = readadc(adcnum, SPICLK, SPIMOSI, SPIMISO, SPICS)
-                adctot += read_adc
-                time.sleep(0.05)
-            read_adc = adctot / reps / 1.0
-            print (read_adc)
+##            for i in range(reps):
+##                read_adc = readadc(adcnum, SPICLK, SPIMOSI, SPIMISO, SPICS)
+##                adctot += read_adc
+##                time.sleep(0.05)
+##            read_adc = adctot / reps / 1.0
+##            print (read_adc)
 
             mq2_lev = (MQGetGasPercentage(MQRead(adcnum, SPICLK, SPIMOSI, SPIMISO, SPICS)/Ro) )
             print(mq2_lev)
 
-            if (read_adc > 100):
+            if (mq2_lev > threshold_ppm):
                 mq2_status = "DANGEROUS"
                 print (mq2_status)
 
                 # Play alarm sound
                 current_time = time.time()
                 while True:
-                    print("try")
+                    #print("try")
                     mySound.play()
                     if(time.time()-current_time > 2):
                         break
@@ -259,11 +261,14 @@ try:
                 ## WRITE THE FILE IN JSON FORMAT ##
                 myfile.write("[\n")
                 myfile.write("{\n")
-                one_item = 'time: ' + time.ctime() + ',\n' + \
-                           'MQ2_level: ' + str(read_adc) + ',\n' + \
-                           'MQ2_status: ' + mq2_status + ',\n' + \
-                           'radiation_level: ' + str(rad_level) + ',\n' + \
-                           'radiation_status: ' + rad_status + '}\n]'
+                one_item = '"name": "' + loc_name + '",\n' + \
+                           '"latitude": ' + str(latitude) + ',\n' + \
+                           '"longitude": ' + str(longitude) + ',\n' + \
+                           '"time": "' + time.ctime() + '",\n' + \
+                           '"MQ2_level": ' + str(mq2_lev) + ',\n' + \
+                           '"MQ2_status": "' + mq2_status + '",\n' + \
+                           '"radiation_level": ' + str(rad_level) + ',\n' + \
+                           '"radiation_status": "' + rad_status + '"}\n]'
                 myfile.write(one_item)
                 myfile.close()
             else :
@@ -275,19 +280,16 @@ try:
                 ## WRITE THE FILE IN JSON FORMAT ##
                 myfile.write("[\n")
                 myfile.write("{\n")
-                one_item = 'time: ' + time.ctime() + ',\n' + \
-                           'MQ2_level: ' + str(read_adc) + ',\n' + \
-                           'MQ2_status: ' + mq2_status + ',\n' + \
-                           'radiation_level: ' + str(rad_level) + ',\n' + \
-                           'radiation_status: ' + rad_status + '}\n]'
+                one_item = '"name": "' + loc_name + '",\n' + \
+                           '"latitude": ' + str(latitude) + ',\n' + \
+                           '"longitude": ' + str(longitude) + ',\n' + \
+                           '"time": "' + time.ctime() + '",\n' + \
+                           '"MQ2_level": ' + str(mq2_lev) + ',\n' + \
+                           '"MQ2_status": "' + mq2_status + '",\n' + \
+                           '"radiation_level": ' + str(rad_level) + ',\n' + \
+                           '"radiation_status": "' + rad_status + '"}\n]'
                 myfile.write(one_item)
                 myfile.close()
-
-##            # write the current level to .txt file anyway
-##            myfile = open(global_var.current_level, 'wt')
-##            one_line = str(read_adc)
-##            myfile.write(one_line)
-##            myfile.close()
             
             #reading_sum = 0 #reset the sum
             time.sleep(time_between_readings)
