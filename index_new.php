@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Page Title</title>
+    <title>Large Scale Early Warning System for Deadly Environmental Elements</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
   <link rel="stylesheet" href="geolocation.css" />
@@ -15,7 +15,7 @@
 
   //displaying the data on homepage
 
-  $(document).ready(function() { 
+  /*$(document).ready(function() { 
   // http request 
     $.getJSON("http://ihome.ust.hk/~maresdhayana/cgi-bin/current.json", function(data){
       var items = [];
@@ -41,7 +41,7 @@
       $("#textDisplay").html(wholeObj);
     });
     
-  });
+  });*/
 
     // display data
     
@@ -88,13 +88,9 @@
 <div data-role="page" id="homePage">
   <?php include("header.php") ?>
 
-  <!--><div role="main" class="ui-content">
+  <!-- <div role="main" class="ui-content">
     <h1>This is the home page</h1>
-
-    <div id="textDisplay">
-	
-  </div>
-  </div>< ?-->
+    <!-- <div id="textDisplay"> </div>  -->
 
   <!--?php include("footer.php") ?-->
     <div id="mapHome">mapHome</div>
@@ -163,18 +159,18 @@
 
 <?php include("header.php") ?>
 
-  <form role="form">
+<!--   <form role="form">
     <div class="form-group">
       <input type="text" class="form-control input-lg" id="search" placeholder="Enter your location">
         </div>
-  </form>
+  </form> -->
 
   <div role="main" class="ui-content">
     <div id="directions-canvas">directions-canvas</div>
   </div>
   <!-- /content -->
-  <!--> <?php include("footer.php") ?> < ?-->
-  <!--?php include_once("footer.php"); ?-->
+  <!--  ?php include("footer.php") ?> -->
+  <!--   ?php include_once("footer.php") ?> -->
 
 </div>
 

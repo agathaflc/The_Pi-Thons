@@ -17,4 +17,7 @@ html, body, #map-canvas, #directions-canvas, #mapHome {
 	height: inherit;
 }
 
-<
+header .top{
+	padding-top: 3%;
+	padding-bottom: 3%;
+}
