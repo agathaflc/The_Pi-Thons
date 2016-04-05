@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Page Title</title>
+    <title>Large Scale Early Warning System for Deadly Environmental Elements</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
   <link rel="stylesheet" href="geolocation.css" />
@@ -12,7 +12,10 @@
 </head>
 <body>
   <script>
-  $(document).ready(function() { 
+
+  //displaying the data on homepage
+
+  /*$(document).ready(function() { 
   // http request 
     $.getJSON("http://ihome.ust.hk/~maresdhayana/cgi-bin/current.json", function(data){
       var items = [];
@@ -38,22 +41,56 @@
       $("#textDisplay").html(wholeObj);
     });
     
-  });
+  });*/
+
+    // display data
+    
+
+      $(window).load(function(){
+        $('#search').keyup(function(){
+            var searchField = $('#search').val();
+            var regex = new RegExp(searchField, "i");
+            var output = '<div class="row">';
+            var count = 1;
+            console.log("entered search");
+            $.getJSON('http://ihome.ust.hk/~maresdhayana/cgi-bin/locations.json', function(data) {
+              $.each(data, function(key, val){
+                console.log("enter if statement");
+                if ((val.name.search(regex) != -1) || (val.location.search(regex) != -1)) {
+                  output += '<div class="col-md-6">';
+                  output += '<div class="col-md-3"><img class="img-responsive" src="'+val.avatar+'" alt="'+ val.name +'" /></div>';
+                  output += '<div class="col-md-7">';
+                  output += '<h5>' + val.name + '</h5>';
+                  output += '<p>' + val.location + '</p>'
+                  output += '</div>';
+                  output += '</div>';
+                  console.log("OUTPUT HERE");
+                  if(count%2 == 0){
+                    output += '</div><div class="row">'
+                  }
+                  count++;
+                  console.log("after count++");
+                }
+              });
+              output += '</div>';
+              $('#results').html(output);
+              console.log("after results");
+            }); 
+            console.log("still in search");
+        });
+        console.log("still in window");
+      });
+
+
   </script>
 
 
 <div data-role="page" id="homePage">
   <?php include("header.php") ?>
 
-  <div role="main" class="ui-content">
+  <!-- <div role="main" class="ui-content">
     <h1>This is the home page</h1>
-
-    
-    
-    <div id="textDisplay">
-	
-  </div>
-  </div>
+    <!-- <div id="textDisplay"> </div>  -->
 
   <!--?php include("footer.php") ?-->
     <div id="mapHome">mapHome</div>
@@ -122,11 +159,18 @@
 
 <?php include("header.php") ?>
 
+<!--   <form role="form">
+    <div class="form-group">
+      <input type="text" class="form-control input-lg" id="search" placeholder="Enter your location">
+        </div>
+  </form> -->
+
   <div role="main" class="ui-content">
     <div id="directions-canvas">directions-canvas</div>
-  </div><!-- /content -->
-  <?php include("footer.php") ?>
-  <!--?php include_once("footer.php"); ?-->
+  </div>
+  <!-- /content -->
+  <!--  ?php include("footer.php") ?> -->
+  <!--   ?php include_once("footer.php") ?> -->
 
 </div>
 
@@ -148,7 +192,7 @@
     <script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
     <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCTZea67jn4YSPIGu0dNTHRyB1jnvo1Q00"></script>
-    <script src="geolocation.js"></script>
+    <script src="geolocation.js" charset = "UTF-8"></script>
 	<script src="display_graphs.js"></script>
 </body>
 </html>
