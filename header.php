@@ -9,7 +9,7 @@
 	<div data-role="navbar">
 		<ul>
 			<li><a href="#homePage">Home</a></li>
-			<!-- <li><a href="#aboutPage">About</a></li> -->
+			<li><a href="#aboutPage">About</a></li>
 			<li><a href="#geoPage">Geolocation</a></li>
 			<!-- <li><a href="#mapPage">Map</a></li> -->
 			<li><a href="#directionsPage">Directions</a></li>
