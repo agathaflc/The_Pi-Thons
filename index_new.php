@@ -121,10 +121,22 @@
   <div role="main" class="ui-content">
     <h1>This is the about page</h1>
   </div>
-  
+
+  <?php
+
+// This is just an example of reading server side data and sending it to the client.
+// It reads a json formatted text file and outputs it.
+
+$string = file_get_contents(“sampleData_json.json”);
+echo $string;
+
+// Instead you can query your database and parse into JSON etc etc
+
+?>
+
   <div id="linechart_material" style="width: 900px; height: 500px"></div>
   
-  <?php include("footer.php") ?>
+  <!--?php include("footer.php") ?-->
   <!--?php include_once("footer.php"); ?-->
 </div>
 
@@ -193,6 +205,7 @@
     <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCTZea67jn4YSPIGu0dNTHRyB1jnvo1Q00"></script>
     <script src="geolocation.js" charset = "UTF-8"></script>
-	<script src="display_graphs.js"></script>
+	 <script src="display_graphs.js"></script>
+   <script type=”text/javascript” src=”http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js”></script>
 </body>
 </html>

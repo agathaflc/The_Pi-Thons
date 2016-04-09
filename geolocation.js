@@ -69,7 +69,7 @@ function MergeJSON (o, ob) {
 	
 function fetch_json()
 {
-	console.log("fetch_json");
+	//console.log("fetch_json");
 	//var finalObj = [];
 	$.getJSON("http://ihome.ust.hk/~maresdhayana/cgi-bin/currentsaikung.json", function(data)
 	{
@@ -229,7 +229,7 @@ function initialize()
  
 function updateMarker(markers, LocationData)
 {
-	console.log("updateMarker");
+	//console.log("updateMarker");
 	var n = markers.length;
 	//console.log("n = " + n);
 	var i;
